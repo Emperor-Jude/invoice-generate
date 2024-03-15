@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.invoice.invoicegenerate.mapper.PdfFileMapper">
+
+    <sql id="querySql">
+        select <include refid="allField"/>
+        from pdf_file A
+        <include refid="search"/>
+    </sql>
+
+    <select id="queryList" resultType="com.invoice.invoicegenerate.domain.vo.PdfFileVo">
+        <include refid="querySql"/>
+        <if test="entity.creator != null and entity.creator != ''">
+            and A.creator like concat('%', #{entity.creator}, '%')
+        </if>
+        <if test="entity.updater != null and entity.updater != ''">
+            and A.updater like concat('%', #{entity.updater}, '%')
+        </if>
+        <if test="entity.filename != null and entity.filename != ''">
+            and A.fileName like concat('%', #{entity.filename}, '%')
+        </if>
+        <if test="entity.url != null and entity.url != ''">
+            and A.url like concat('%', #{entity.url}, '%')
+        </if>
+        order by A.create_time desc
+    </select>
+
+    <select id="queryById" resultType="com.invoice.invoicegenerate.domain.vo.PdfFileVo">
+        <include refid="querySql"/>
+        and A.id = #{id}
+    </select>
+
+    <sql id="allField">
+        A.id,
+        A.del_flag,
+        A.creator,
+        A.create_time,
+        A.updater,
+        A.update_time,
+        A.fileName,
+        A.url
+    </sql>
+
+    <sql id="search">
+        where A.del_flag = 1
+    </sql>
+</mapper>

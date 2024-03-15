@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.invoice.invoicegenerate.mapper.ClientMapper">
+
+    <sql id="querySql">
+        select <include refid="allField"/>
+        from client A
+        <include refid="search"/>
+    </sql>
+
+    <select id="queryList" resultType="com.invoice.invoicegenerate.domain.vo.ClientVo">
+        <include refid="querySql"/>
+        <if test="entity.creator != null and entity.creator != ''">
+            and A.creator like concat('%', #{entity.creator}, '%')
+        </if>
+        <if test="entity.updater != null and entity.updater != ''">
+            and A.updater like concat('%', #{entity.updater}, '%')
+        </if>
+        <if test="entity.clientName != null and entity.clientName != ''">
+            and A.client_name like concat('%', #{entity.clientName}, '%')
+        </if>
+        <if test="entity.clientCode != null and entity.clientCode != ''">
+            and A.client_code like concat('%', #{entity.clientCode}, '%')
+        </if>
+        <if test="entity.contacts != null and entity.contacts != ''">
+            and A.contacts like concat('%', #{entity.contacts}, '%')
+        </if>
+        <if test="entity.contactWay != null and entity.contactWay != ''">
+            and A.contact_way like concat('%', #{entity.contactWay}, '%')
+        </if>
+        order by A.create_time desc
+    </select>
+
+    <select id="queryById" resultType="com.invoice.invoicegenerate.domain.vo.ClientVo">
+        <include refid="querySql"/>
+        and A.id = #{id}
+    </select>
+
+    <sql id="allField">
+        A.id,
+        A.contact_way,
+        A.creator,
+        A.create_time,
+        A.updater,
+        A.update_time,
+        A.client_name,
+        A.client_code,
+        A.contacts
+    </sql>
+
+    <sql id="search">
+        where A.del_flag = 1
+    </sql>
+</mapper>
